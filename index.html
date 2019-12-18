@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>ChristmaSelfies</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>ChristmaSelfies!</h1>
+      <canvas id="canvas" width="640" height="640"></canvas>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script>
+      let faceImage = "https://images-na.ssl-images-amazon.com/images/I/71Zy0yoxrdL._SY741_.jpg";//"https://maxcdn.icons8.com/app/uploads/2019/05/poster-for-movie.png";//"https://www.leonardodavinci.net/images/gallery/the-mona-lisa.jpg";//"http://www.cyber-cinema.com/original/eclipsefinalOrg.jpg";//"https://thegww.com/wp-content/uploads/2017/11/lord-of-the-rings-1-the-fellowship-of-the-ring-movie-poster-2001-1020195991.jpg";//"https://www.tvovermind.com/wp-content/uploads/2017/08/goodfellas1-640x798.jpeg";//"https://images.indianexpress.com/2017/03/mr-bean-film-posters_wolvebean-1-06_820.jpg?w=610";//"https://i.pinimg.com/originals/27/9d/0a/279d0a2b1eaea27f94af4ccb2d533b16.jpg";//"https://image.tmdb.org/t/p/original/yD3gXOtGmXnbJBPLgqluZU2QF5c.jpg";//"https://images-na.ssl-images-amazon.com/images/I/51-9LlvTiUL.jpg";//"http://www.businessinsider.com/image/526de59deab8ea2f3285b2b4-1200-2000/hunger%20games%20catching%20fire%20poster.jpg";//"https://images-na.ssl-images-amazon.com/images/I/8150KG7y2EL.jpg";//"http://blog.orangecarton.com/wp-content/uploads/2013/05/american_gothic.jpg";//"https://ae01.alicdn.com/kf/HTB109CQHVXXXXahXFXXq6xXFXXXq/hand-painted-canvas-oil-paintings-picture-portrait-Artist-Jan-Vermeer-famous-Reproduction-painting-Girl-with-a.jpg";//"https://cdn2.oceansbridge.com/2018/07/06062259/A-Family-Group-Bernardino-Licinio-Oil-Painting.jpg";//"https://cdn.exoticindia.com/oils/ou94.jpg";//"https://upload.wikimedia.org/wikipedia/commons/b/bc/Leonardo_da_Vinci_-_Mona_Lisa_(detail)_-_WGA12713.jpg";//"https://liceclinicscolumbus.com/wp-content/uploads/2017/06/selfies-lice.jpg";//"https://media.istockphoto.com/videos/santa-claus-taking-a-self-portrait-on-a-cell-phone-video-id623569842?s=640x640";//"https://storage.googleapis.com/burbcommunity-morethanthecurve/2018/12/santa-selfie-8.jpg";//"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwmOXQAL28Rfr7qLX2Jsfyu2wWY30tu9NqXdAKtLoIuiebNUyp&s";//"https://www.dailydot.com/wp-content/uploads/ca6/02/49b124286fb0d28ef524f6419da3b5f3.jpg";//"https://imgur.com/Kmp1cNc.png";//"https://cdn.theatlantic.com/assets/media/img/mt/2014/03/BhxWutnCEAAtEQ6.jpg_large/lead_720_405.jpg?mod=1533691645";//"https://images.idgesg.net/images/article/2018/07/iphone-pixabay-100763451-orig.jpg";//"https://www.natcom.org/sites/default/files/styles/scale_w300/public/cm-current/2017_CommCurrents_Selfies_1.png?itok=DxNQHNoY";
+      let scaleRatio = 0;
+      let apikey = "";
+      fetch( "http://localhost:1225/apikey" )
+      .then( r => r.json() )
+      .then( async r => {
+        apikey = r.key;
+        let attributes = await detectFace( apikey, faceImage );
+        console.log( attributes );
+
+        attributes.forEach( f => {
+          switch( Math.floor( 2 * Math.random() ) ) {
+            case 0:
+              drawRudolph( f );
+              break;
+            case 1:
+              drawSanta( f );
+              break;
+            case 2:
+              drawRudolph( f );
+              // drawBabaYoda( f );
+              break;
+          }
+        } );
+      } );
+
+      function drawRudolph( face ) {
+        let noseSize = 1.25 * ( face.faceLandmarks.noseRightAlarOutTip.x - face.faceLandmarks.noseLeftAlarOutTip.x );
+        drawImageToCanvas( "http://localhost:1225/web/rednose.png", face.faceLandmarks.noseTip.x - noseSize / 2, face.faceLandmarks.noseTip.y - noseSize / 2, noseSize, noseSize );
+        let antlerSize = 1.5 * ( face.faceLandmarks.eyebrowRightOuter.x - face.faceLandmarks.eyebrowLeftOuter.x );
+        let antlerLeftY = 1.25 * ( face.faceLandmarks.eyebrowLeftOuter.y - face.faceLandmarks.eyeLeftOuter.y );
+        drawImageToCanvas( "http://localhost:1225/web/antlerLeft.png", face.faceLandmarks.eyebrowLeftOuter.x - antlerSize * 0.75, face.faceLandmarks.eyebrowLeftOuter.y + antlerLeftY - antlerSize, antlerSize, antlerSize );
+        let antlerRightY = 1.25 * ( face.faceLandmarks.eyebrowRightOuter.y - face.faceLandmarks.eyeRightOuter.y );
+        drawImageToCanvas( "http://localhost:1225/web/antlerRight.png", face.faceLandmarks.eyebrowRightOuter.x - antlerSize * 0.25, face.faceLandmarks.eyebrowRightOuter.y + antlerLeftY - antlerSize, antlerSize, antlerSize );
+      }
+
+      function drawSanta( face ) {
+        let beardSize = 2.5 * ( face.faceLandmarks.mouthRight.x - face.faceLandmarks.mouthLeft.x );
+        let beardX = face.faceLandmarks.mouthLeft.x + ( face.faceLandmarks.mouthRight.x - face.faceLandmarks.mouthLeft.x ) / 2;
+        let beardY = face.faceLandmarks.mouthLeft.y + ( face.faceLandmarks.mouthRight.y - face.faceLandmarks.mouthLeft.y ) / 2;
+        drawImageToCanvas( "http://localhost:1225/web/santaBeard.png", beardX - beardSize / 2, beardY - beardSize * 0.15, beardSize, beardSize );
+        let hatSize = 1.5 * ( face.faceLandmarks.eyebrowRightOuter.x - face.faceLandmarks.eyebrowLeftOuter.x );
+        let hatX = face.faceLandmarks.eyebrowLeftOuter.x + ( face.faceLandmarks.eyebrowRightOuter.x - face.faceLandmarks.eyebrowLeftOuter.x ) / 2;
+        let hatY = face.faceLandmarks.eyebrowLeftOuter.y + ( face.faceLandmarks.eyebrowRightOuter.y - face.faceLandmarks.eyebrowLeftOuter.y ) / 2;
+        setTimeout( () => {
+          drawImageToCanvas( "http://localhost:1225/web/santaHat.png", hatX - hatSize / 2, hatY - hatSize * 0.85, hatSize, hatSize );
+        }, 200 );
+      }
+
+      function drawBabaYoda( face ) {
+        let hatSize = 2.5 * ( face.faceLandmarks.pupilRight.x - face.faceLandmarks.pupilLeft.x );
+        let hatX = face.faceLandmarks.pupilLeft.x + ( face.faceLandmarks.pupilRight.x - face.faceLandmarks.pupilLeft.x ) / 2;
+        let hatY = face.faceLandmarks.pupilLeft.y + ( face.faceLandmarks.pupilRight.y - face.faceLandmarks.pupilLeft.y ) / 2;
+        drawImageToCanvas( "http://localhost:1225/web/babayoda.png", hatX - hatSize * 2.4 / 2, hatY - hatSize * 0.4, hatSize * 2.4, hatSize );
+      }
+
+      drawImageToCanvas( faceImage, 0, 0 );
+
+      async function detectFace( apiKey, imageUrl ) {
+        let result = await fetch( "https://westus.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=true&recognitionModel=recognition_01&returnRecognitionModel=false&detectionModel=detection_01", {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json",
+            "Ocp-Apim-Subscription-Key": apiKey
+          },
+          body: JSON.stringify({
+            url: imageUrl
+          })
+        }).then( r => r.json() );
+        return result;
+      }
+
+      function drawImageToCanvas( url, x, y, width = 0, height = 0 ) {
+        var myCanvas = document.getElementById('canvas');
+        var ctx = myCanvas.getContext('2d');
+        var img = new Image;
+        img.onload = function(){
+          if( !scaleRatio ) {
+            scaleRatio = 640 / img.width;
+            if( width && height ) {
+              ctx.drawImage( img, x, y, width, height );
+            }
+            else {
+              ctx.drawImage( img, x, y, img.width * scaleRatio, img.height * scaleRatio );
+            }
+          }
+          else {
+            if( width && height ) {
+              ctx.drawImage( img, x * scaleRatio, y * scaleRatio, width * scaleRatio, height * scaleRatio );
+            }
+            else {
+              ctx.drawImage( img, x * scaleRatio, y * scaleRatio );
+            }
+          }
+        };
+        img.src = url;
+      }
+    </script>
+  </body>
+</html>

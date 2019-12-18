@@ -1,0 +1,37 @@
+{
+  "name": "christmaselfies",
+  "version": "1.0.0",
+  "description": "Christmas Face Generator built using Microsoft Azure Face API!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/instafluff/ChristmaSelfies.git"
+  },
+  "keywords": [
+    "Instafluff",
+    "Azure",
+    "Face",
+    "Christmas",
+    "Festive",
+    "Holiday",
+    "Selfie",
+    "Image",
+    "Generator",
+    "Fun",
+    "Photo",
+    "Save"
+  ],
+  "author": "Instafluff",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/instafluff/ChristmaSelfies/issues"
+  },
+  "homepage": "https://github.com/instafluff/ChristmaSelfies#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "webwebweb": "^1.1.8"
+  }
+}
